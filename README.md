@@ -14,7 +14,8 @@ in whichever way you prefer, but I recommend [NPM][npm].
 
 ## Documentation
 Typical usage is from the command line with the `urine` command. To get help or
-usage information, try `urine -h`.
+usage information, try `urine -h`. Some contrived examples of using the command
+are shown below.
 ```bash
 # Sample the input.txt file, splitting around newlines with a probability of 0.1
 $ urine -p 0.1 input.txt
@@ -31,6 +32,12 @@ $ cat input.txt | urine -p 0.001
 # Sample the syslog file through stdin with a probability of 0.1
 # Note that `tail` keeps the stream open, as will `urine`
 $ tail -f /var/log/syslog | urine -p .1
+
+# Sample the syslog file, grepping for "myapp" with a probability of 0.5
+$ tail -f /var/log/syslog | grep --line-buffered 'myapp' | urine -p .5
+
+# Sample output from a stream of `date` output with a probability of 0.1
+$ while true; do date; sleep 1; done | urine -p .1
 ```
 
 There's also a public JavaScript API for working with streams inside your
