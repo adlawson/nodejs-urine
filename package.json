@@ -1,0 +1,27 @@
+{
+    "name": "urine",
+    "version": "1.0.0",
+    "description": "Sample a data stream",
+    "keywords": ["cli", "pipe", "sample", "stream", "test"],
+    "license": "MIT",
+    "main": "src/index.js",
+    "bin": {
+        "urine": "cli.js"
+    },
+    "scripts": {
+        "test": "node_modules/.bin/mocha --ui tdd --reporter spec test.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:adlawson/urine.js"
+    },
+    "dependencies": {
+        "commander": "~2.3",
+        "split": "~0.3"
+    },
+    "devDependencies": {
+        "chai": "~1.9",
+        "mocha": "~1.21",
+        "sinon": "~1.10"
+    }
+}
