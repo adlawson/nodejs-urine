@@ -15,6 +15,9 @@
         "type": "git",
         "url": "git@github.com:adlawson/urine.js"
     },
+    "engines": {
+        "node" : ">=0.10"
+    },
     "dependencies": {
         "commander": "~2.3",
         "split": "~0.3"
