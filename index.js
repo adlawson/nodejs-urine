@@ -23,7 +23,6 @@ function getOption(val, def) {
 function getOptions(options) {
     var opts = options || {};
     return {
-        maximum: getOption(opts.maximum),
         pattern: getOption(opts.pattern),
         probability: getOption(opts.probability, 1)
     };

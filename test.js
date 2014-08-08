@@ -4,6 +4,7 @@ var urine = require('./index.js');
 var assert = require('chai').assert;
 var sinon = require('sinon');
 var stream = require('stream');
+var through = require('through');
 
 suite('urine:', function () {
     var nativeRand, opts, strIn, strOut, strOutSpy;
@@ -93,10 +94,9 @@ suite('urine:', function () {
                 return 0.1234;
             });
 
-            strOut.pipe(through(function (chunk, enc, done) {
+            strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
-                done(null, chunk);
             }));
 
             urine(strIn, strOut, opts);
@@ -115,10 +115,9 @@ suite('urine:', function () {
                 return 0.6789;
             });
 
-            strOut.pipe(through(function (chunk, enc, done) {
+            strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
-                done(null, chunk);
             }));
 
             urine(strIn, strOut, opts);
@@ -147,10 +146,9 @@ suite('urine:', function () {
                 return 0.1234;
             });
 
-            strOut.pipe(through(function (chunk, enc, done) {
+            strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
-                done(null, chunk);
             }));
 
             urine(strIn, strOut, opts);
@@ -169,10 +167,9 @@ suite('urine:', function () {
                 return 0.6789;
             });
 
-            strOut.pipe(through(function (chunk, enc, done) {
+            strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
-                done(null, chunk);
             }));
 
             urine(strIn, strOut, opts);
@@ -201,10 +198,9 @@ suite('urine:', function () {
                 return 0.1234;
             });
 
-            strOut.pipe(through(function (chunk, enc, done) {
+            strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
-                done(null, chunk);
             }));
 
             urine(strIn, strOut, opts);
@@ -223,10 +219,9 @@ suite('urine:', function () {
                 return 0.6789;
             });
 
-            strOut.pipe(through(function (chunk, enc, done) {
+            strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
-                done(null, chunk);
             }));
 
             urine(strIn, strOut, opts);
@@ -255,10 +250,9 @@ suite('urine:', function () {
                 return 0.1234;
             });
 
-            strOut.pipe(through(function (chunk, enc, done) {
+            strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
-                done(null, chunk);
             }));
 
             urine(strIn, strOut, opts);
@@ -277,10 +271,9 @@ suite('urine:', function () {
                 return 0.6789;
             });
 
-            strOut.pipe(through(function (chunk, enc, done) {
+            strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
-                done(null, chunk);
             }));
 
             urine(strIn, strOut, opts);
@@ -309,10 +302,9 @@ suite('urine:', function () {
                 return 0.1234;
             });
 
-            strOut.pipe(through(function (chunk, enc, done) {
+            strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
-                done(null, chunk);
             }));
 
             urine(strIn, strOut, opts);
@@ -331,10 +323,9 @@ suite('urine:', function () {
                 return 0.6789;
             });
 
-            strOut.pipe(through(function (chunk, enc, done) {
+            strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
-                done(null, chunk);
             }));
 
             urine(strIn, strOut, opts);
