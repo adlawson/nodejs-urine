@@ -29,7 +29,7 @@ function getOptions(options) {
     };
 }
 
-// getSampleTransform :: Object -> Function
+// getSampleTransform :: Object -> Stream
 function getSampleTransform(opts) {
     return through(function sampleTransform(chunk) {
         if (shouldSample(opts.probability)) {
@@ -38,7 +38,7 @@ function getSampleTransform(opts) {
     });
 }
 
-// getSplitTransform :: Object -> Function
+// getSplitTransform :: Object -> Stream
 function getSplitTransform(opts) {
     return split(opts.pattern);
 }
