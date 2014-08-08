@@ -23,6 +23,20 @@ suite('urine:', function () {
         }
     }
 
+    // mathRand1234 :: -> Undefined
+    function mathRand1234() {
+        monkeyPatchMathRand(function mathRandForUrineTesting1234() {
+            return 0.1234;
+        });
+    }
+
+    // mathRand6789 :: -> Undefined
+    function mathRand6789() {
+        monkeyPatchMathRand(function mathRandForUrineTesting6789() {
+            return 0.6789;
+        });
+    }
+
     setup(function () {
         strIn = new stream.PassThrough();
         strOut = new stream.PassThrough();
@@ -90,15 +104,12 @@ suite('urine:', function () {
             var count = 0;
             var piped = '';
 
-            monkeyPatchMathRand(function mathRandForUrineTesting1234() {
-                return 0.1234;
-            });
-
             strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
             }));
 
+            mathRand1234();
             urine(strIn, strOut, opts);
             strIn.push(data);
 
@@ -111,15 +122,12 @@ suite('urine:', function () {
             var count = 0;
             var piped = '';
 
-            monkeyPatchMathRand(function mathRandForUrineTesting6789() {
-                return 0.6789;
-            });
-
             strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
             }));
 
+            mathRand6789();
             urine(strIn, strOut, opts);
             strIn.push(data);
 
@@ -142,15 +150,12 @@ suite('urine:', function () {
             var count = 0;
             var piped = '';
 
-            monkeyPatchMathRand(function mathRandForUrineTesting1234() {
-                return 0.1234;
-            });
-
             strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
             }));
 
+            mathRand1234();
             urine(strIn, strOut, opts);
             strIn.push(data);
 
@@ -163,15 +168,12 @@ suite('urine:', function () {
             var count = 0;
             var piped = '';
 
-            monkeyPatchMathRand(function mathRandForUrineTesting6789() {
-                return 0.6789;
-            });
-
             strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
             }));
 
+            mathRand6789();
             urine(strIn, strOut, opts);
             strIn.push(data);
 
@@ -194,15 +196,12 @@ suite('urine:', function () {
             var count = 0;
             var piped = '';
 
-            monkeyPatchMathRand(function mathRandForUrineTesting1234() {
-                return 0.1234;
-            });
-
             strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
             }));
 
+            mathRand1234();
             urine(strIn, strOut, opts);
             strIn.push(data);
 
@@ -215,15 +214,12 @@ suite('urine:', function () {
             var count = 0;
             var piped = '';
 
-            monkeyPatchMathRand(function mathRandForUrineTesting6789() {
-                return 0.6789;
-            });
-
             strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
             }));
 
+            mathRand6789();
             urine(strIn, strOut, opts);
             strIn.push(data);
 
@@ -246,15 +242,12 @@ suite('urine:', function () {
             var count = 0;
             var piped = '';
 
-            monkeyPatchMathRand(function mathRandForUrineTesting1234() {
-                return 0.1234;
-            });
-
             strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
             }));
 
+            mathRand1234();
             urine(strIn, strOut, opts);
             strIn.push(data);
 
@@ -267,15 +260,12 @@ suite('urine:', function () {
             var count = 0;
             var piped = '';
 
-            monkeyPatchMathRand(function mathRandForUrineTesting6789() {
-                return 0.6789;
-            });
-
             strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
             }));
 
+            mathRand6789();
             urine(strIn, strOut, opts);
             strIn.push(data);
 
@@ -298,15 +288,12 @@ suite('urine:', function () {
             var count = 0;
             var piped = '';
 
-            monkeyPatchMathRand(function mathRandForUrineTesting1234() {
-                return 0.1234;
-            });
-
             strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
             }));
 
+            mathRand1234();
             urine(strIn, strOut, opts);
             strIn.push(data);
 
@@ -319,15 +306,12 @@ suite('urine:', function () {
             var count = 0;
             var piped = '';
 
-            monkeyPatchMathRand(function mathRandForUrineTesting6789() {
-                return 0.6789;
-            });
-
             strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
             }));
 
+            mathRand6789();
             urine(strIn, strOut, opts);
             strIn.push(data);
 
