@@ -1,19 +1,17 @@
 'use strict';
 
 var split = require('split');
+var through = require('through');
 
 module.exports = urine;
 
 // urine :: Stream, Stream, Object -> Undefined
 function urine(strIn, strOut, options) {
     var opts = getOptions(options);
-    var piped = strIn.pipe(split(opts.pattern));
 
-    piped.on('data', function onStdin(chunk) {
-        if (shouldSample(opts.probability)) {
-            strOut.write(chunk + "\n");
-        }
-    });
+    strIn.pipe(getSplitTransform(opts))
+         .pipe(getSampleTransform(opts))
+         .pipe(strOut);
 }
 
 // getOption :: Mixed, Mixed -> Mixed
@@ -25,9 +23,24 @@ function getOption(val, def) {
 function getOptions(options) {
     var opts = options || {};
     return {
+        maximum: getOption(opts.maximum),
         pattern: getOption(opts.pattern),
         probability: getOption(opts.probability, 1)
     };
+}
+
+// getSampleTransform :: Object -> Function
+function getSampleTransform(opts) {
+    return through(function sampleTransform(chunk) {
+        if (shouldSample(opts.probability)) {
+            this.queue(chunk + "\n");
+        }
+    });
+}
+
+// getSplitTransform :: Object -> Function
+function getSplitTransform(opts) {
+    return split(opts.pattern);
 }
 
 // shouldSample :: Float|Integer -> Boolean

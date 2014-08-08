@@ -6,7 +6,7 @@ var sinon = require('sinon');
 var stream = require('stream');
 
 suite('urine:', function () {
-    var nativeRand, opts, strIn, strOut, strOutWrite, strPipe;
+    var nativeRand, opts, strIn, strOut, strOutSpy;
 
     // monkeyPatchMathRand :: Function -> Undefined
     function monkeyPatchMathRand(fn) {
@@ -23,22 +23,8 @@ suite('urine:', function () {
     }
 
     setup(function () {
-        strIn = new stream.Writable();
-        strOut = new stream.Writable();
-        strPipe = new stream.Writable();
-
-        sinon.stub(strIn, 'pipe', function () {
-            return strPipe;
-        });
-
-        sinon.stub(strOut, 'write', function () {
-            return strOut;
-        });
-
-        sinon.stub(strPipe, 'on', function (type, fn) {
-            strOutWrite = fn;
-            return strPipe;
-        });
+        strIn = new stream.PassThrough();
+        strOut = new stream.PassThrough();
     });
 
     teardown(function () {
@@ -49,192 +35,313 @@ suite('urine:', function () {
         assert.isFunction(urine);
     });
 
-    test('`urine(strIn, strOut)` calls `strIn.pipe()`', function () {
-        urine(strIn, strOut);
+    suite('pipes:', function () {
+        var strSplit, strTransform;
 
-        assert.isTrue(strIn.pipe.calledOnce);
-    });
+        setup(function () {
+            strSplit = new stream.PassThrough();
+            strTransform = new stream.PassThrough();
 
-    test('`urine(strIn, strOut)` calls `strPipe.on()`', function () {
-        urine(strIn, strOut);
+            sinon.stub(strIn, 'pipe', function () {
+                return strSplit;
+            });
+            sinon.stub(strSplit, 'pipe', function () {
+                return strTransform;
+            });
 
-        assert.isTrue(strPipe.on.calledOnce);
-        assert.isTrue(strPipe.on.calledWith('data'));
+            strTransform.pipe = sinon.spy();
+        });
+
+        test('`urine(strIn, strOut)` calls `strIn.pipe()`', function () {
+            urine(strIn, strOut);
+
+            assert.isTrue(strIn.pipe.calledOnce);
+            assert.isObject(strIn.pipe.args[0][0]);
+        });
+
+        test('`urine(strIn, strOut)` calls `strSplit.pipe()`', function () {
+            urine(strIn, strOut);
+
+            assert.isTrue(strSplit.pipe.calledOnce);
+            assert.isObject(strSplit.pipe.args[0][0]);
+        });
+
+        test('`urine(strIn, strOut)` calls `strTransform.pipe()`', function () {
+            urine(strIn, strOut);
+
+            assert.isTrue(strTransform.pipe.calledOnce);
+            assert.isObject(strTransform.pipe.args[0][0]);
+        });
+
     });
 
     suite('probability `1`:', function () {
         setup(function () {
+            strIn.resume();
+            strOut.resume();
             opts = {
                 probability: 1
             };
         });
 
-        test('`urine(strIn, strOut, opts)` calls `strOut.write()`', function () {
-            var data = 'foo';
+        test('`urine(strIn, strOut, opts)` pipes to `strOut`', function () {
+            var data = "foo\n";
+            var count = 0;
+            var piped = '';
 
             monkeyPatchMathRand(function mathRandForUrineTesting1234() {
                 return 0.1234;
             });
 
-            urine(strIn, strOut, opts);
-            strOutWrite(data);
+            strOut.pipe(through(function (chunk, enc, done) {
+                count += 1;
+                piped += chunk;
+                done(null, chunk);
+            }));
 
-            assert.isTrue(strOut.write.calledOnce);
-            assert.isTrue(strOut.write.calledWith(data + "\n"));
+            urine(strIn, strOut, opts);
+            strIn.push(data);
+
+            assert.equal(count, 1);
+            assert.equal(piped, data);
         });
 
-        test('`urine(strIn, strOut, opts)` calls `strOut.write()`', function () {
-            var data = 'foo';
+        test('`urine(strIn, strOut, opts)` pipes to `strOut`', function () {
+            var data = "foo\n";
+            var count = 0;
+            var piped = '';
 
             monkeyPatchMathRand(function mathRandForUrineTesting6789() {
                 return 0.6789;
             });
 
-            urine(strIn, strOut, opts);
-            strOutWrite(data);
+            strOut.pipe(through(function (chunk, enc, done) {
+                count += 1;
+                piped += chunk;
+                done(null, chunk);
+            }));
 
-            assert.isTrue(strOut.write.calledOnce);
-            assert.isTrue(strOut.write.calledWith(data + "\n"));
+            urine(strIn, strOut, opts);
+            strIn.push(data);
+
+            assert.equal(count, 1);
+            assert.equal(piped, data);
         });
     });
 
     suite('probability `0.75`:', function () {
         setup(function () {
+            strIn.resume();
+            strOut.resume();
             opts = {
                 probability: .75
             };
         });
 
-        test('`urine(strIn, strOut, opts)` calls `strOut.write()`', function () {
-            var data = 'foo';
+        test('`urine(strIn, strOut, opts)` pipes to `strOut`', function () {
+            var data = "foo\n";
+            var count = 0;
+            var piped = '';
 
             monkeyPatchMathRand(function mathRandForUrineTesting1234() {
                 return 0.1234;
             });
 
-            urine(strIn, strOut, opts);
-            strOutWrite(data);
+            strOut.pipe(through(function (chunk, enc, done) {
+                count += 1;
+                piped += chunk;
+                done(null, chunk);
+            }));
 
-            assert.isTrue(strOut.write.calledOnce);
-            assert.isTrue(strOut.write.calledWith(data + "\n"));
+            urine(strIn, strOut, opts);
+            strIn.push(data);
+
+            assert.equal(count, 1);
+            assert.equal(piped, data);
         });
 
-        test('`urine(strIn, strOut, opts)` calls `strOut.write()`', function () {
-            var data = 'foo';
+        test('`urine(strIn, strOut, opts)` pipes to `strOut`', function () {
+            var data = "foo\n";
+            var count = 0;
+            var piped = '';
 
             monkeyPatchMathRand(function mathRandForUrineTesting6789() {
                 return 0.6789;
             });
 
-            urine(strIn, strOut, opts);
-            strOutWrite(data);
+            strOut.pipe(through(function (chunk, enc, done) {
+                count += 1;
+                piped += chunk;
+                done(null, chunk);
+            }));
 
-            assert.isTrue(strOut.write.calledOnce);
-            assert.isTrue(strOut.write.calledWith(data + "\n"));
+            urine(strIn, strOut, opts);
+            strIn.push(data);
+
+            assert.equal(count, 1);
+            assert.equal(piped, data);
         });
     });
 
     suite('probability `0.5`:', function () {
         setup(function () {
+            strIn.resume();
+            strOut.resume();
             opts = {
                 probability: .5
             };
         });
 
-        test('`urine(strIn, strOut, opts)` calls `strOut.write()`', function () {
-            var data = 'foo';
+        test('`urine(strIn, strOut, opts)` pipes to `strOut`', function () {
+            var data = "foo\n";
+            var count = 0;
+            var piped = '';
 
             monkeyPatchMathRand(function mathRandForUrineTesting1234() {
                 return 0.1234;
             });
 
-            urine(strIn, strOut, opts);
-            strOutWrite(data);
+            strOut.pipe(through(function (chunk, enc, done) {
+                count += 1;
+                piped += chunk;
+                done(null, chunk);
+            }));
 
-            assert.isTrue(strOut.write.calledOnce);
-            assert.isTrue(strOut.write.calledWith(data + "\n"));
+            urine(strIn, strOut, opts);
+            strIn.push(data);
+
+            assert.equal(count, 1);
+            assert.equal(piped, data);
         });
 
-        test('`urine(strIn, strOut, opts)` doesn\'t call `strOut.write()`', function () {
-            var data = 'foo';
+        test('`urine(strIn, strOut, opts)` doesn\'t pipe to `strOut`', function () {
+            var data = "foo\n";
+            var count = 0;
+            var piped = '';
 
             monkeyPatchMathRand(function mathRandForUrineTesting6789() {
                 return 0.6789;
             });
 
-            urine(strIn, strOut, opts);
-            strOutWrite(data);
+            strOut.pipe(through(function (chunk, enc, done) {
+                count += 1;
+                piped += chunk;
+                done(null, chunk);
+            }));
 
-            assert.equal(strOut.write.callCount, 0);
+            urine(strIn, strOut, opts);
+            strIn.push(data);
+
+            assert.equal(count, 0);
+            assert.equal(piped, '');
         });
     });
 
     suite('probability `0.25`:', function () {
         setup(function () {
+            strIn.resume();
+            strOut.resume();
             opts = {
                 probability: .25
             };
         });
 
-        test('`urine(strIn, strOut, opts)` calls `strOut.write()`', function () {
-            var data = 'foo';
+        test('`urine(strIn, strOut, opts)` pipes to `strOut`', function () {
+            var data = "foo\n";
+            var count = 0;
+            var piped = '';
 
             monkeyPatchMathRand(function mathRandForUrineTesting1234() {
                 return 0.1234;
             });
 
-            urine(strIn, strOut, opts);
-            strOutWrite(data);
+            strOut.pipe(through(function (chunk, enc, done) {
+                count += 1;
+                piped += chunk;
+                done(null, chunk);
+            }));
 
-            assert.isTrue(strOut.write.calledOnce);
-            assert.isTrue(strOut.write.calledWith(data + "\n"));
+            urine(strIn, strOut, opts);
+            strIn.push(data);
+
+            assert.equal(count, 1);
+            assert.equal(piped, data);
         });
 
-        test('`urine(strIn, strOut, opts)` doesn\'t call `strOut.write()`', function () {
-            var data = 'foo';
+        test('`urine(strIn, strOut, opts)` doesn\'t pipe to `strOut`', function () {
+            var data = "foo\n";
+            var count = 0;
+            var piped = '';
 
             monkeyPatchMathRand(function mathRandForUrineTesting6789() {
                 return 0.6789;
             });
 
-            urine(strIn, strOut, opts);
-            strOutWrite(data);
+            strOut.pipe(through(function (chunk, enc, done) {
+                count += 1;
+                piped += chunk;
+                done(null, chunk);
+            }));
 
-            assert.equal(strOut.write.callCount, 0);
+            urine(strIn, strOut, opts);
+            strIn.push(data);
+
+            assert.equal(count, 0);
+            assert.equal(piped, '');
         });
     });
 
     suite('probability `0`:', function () {
         setup(function () {
+            strIn.resume();
+            strOut.resume();
             opts = {
                 probability: 0
             };
         });
 
-        test('`urine(strIn, strOut, opts)` doesn\'t call `strOut.write()`', function () {
-            var data = 'foo';
+        test('`urine(strIn, strOut, opts)` doesn\'t pipe to `strOut`', function () {
+            var data = "foo\n";
+            var count = 0;
+            var piped = '';
 
             monkeyPatchMathRand(function mathRandForUrineTesting1234() {
                 return 0.1234;
             });
 
-            urine(strIn, strOut, opts);
-            strOutWrite(data);
+            strOut.pipe(through(function (chunk, enc, done) {
+                count += 1;
+                piped += chunk;
+                done(null, chunk);
+            }));
 
-            assert.equal(strOut.write.callCount, 0);
+            urine(strIn, strOut, opts);
+            strIn.push(data);
+
+            assert.equal(count, 0);
+            assert.equal(piped, '');
         });
 
-        test('`urine(strIn, strOut, opts)` doesn\'t call `strOut.write()`', function () {
-            var data = 'foo';
+        test('`urine(strIn, strOut, opts)` doesn\'t pipe to `strOut`', function () {
+            var data = "foo\n";
+            var count = 0;
+            var piped = '';
 
             monkeyPatchMathRand(function mathRandForUrineTesting6789() {
                 return 0.6789;
             });
 
-            urine(strIn, strOut, opts);
-            strOutWrite(data);
+            strOut.pipe(through(function (chunk, enc, done) {
+                count += 1;
+                piped += chunk;
+                done(null, chunk);
+            }));
 
-            assert.equal(strOut.write.callCount, 0);
+            urine(strIn, strOut, opts);
+            strIn.push(data);
+
+            assert.equal(count, 0);
+            assert.equal(piped, '');
         });
     });
 });

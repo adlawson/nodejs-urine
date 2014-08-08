@@ -20,7 +20,8 @@
     },
     "dependencies": {
         "commander": "~2.3",
-        "split": "~0.3"
+        "split": "~0.3",
+        "through": "~2.3"
     },
     "devDependencies": {
         "chai": "~1.9",
