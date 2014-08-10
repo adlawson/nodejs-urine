@@ -23,8 +23,8 @@ function getOption(val, def) {
 function getOptions(options) {
     var opts = options || {};
     return {
-        pattern: getOption(opts.pattern),
-        probability: getOption(opts.probability, 1)
+        probability: getOption(opts.probability, 1),
+        split: getOption(opts.split)
     };
 }
 
@@ -39,7 +39,7 @@ function getSampleTransform(opts) {
 
 // getSplitTransform :: Object -> Stream
 function getSplitTransform(opts) {
-    return split(opts.pattern);
+    return split(opts.split);
 }
 
 // shouldSample :: Float|Integer -> Boolean

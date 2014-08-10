@@ -87,7 +87,89 @@ suite('urine:', function () {
             assert.isTrue(strTransform.pipe.calledOnce);
             assert.isObject(strTransform.pipe.args[0][0]);
         });
+    });
 
+    suite('split:', function () {
+        var count, piped;
+
+        setup(function () {
+            strIn.resume();
+            strOut.resume();
+
+            count = 0;
+            piped = '';
+
+            strOut.pipe(through(function (chunk) {
+                count += 1;
+                piped += chunk;
+            }));
+        });
+
+        test('`urine(strIn, strOut, {split://\\r?\\n//})` pipes data to `strOut`', function () {
+            var data = "foo\n";
+            var opts = {split: /\r?\n/};
+
+            urine(strIn, strOut, opts);
+            strIn.push(data);
+
+            assert.equal(count, 1);
+            assert.equal(piped, "foo\n");
+        });
+
+        test('`urine(strIn, strOut, {split://\\r?\\n//})` doesn\'t pipe data to `strOut`', function () {
+            var data = "foo";
+            var opts = {split: /\r?\n/};
+
+            urine(strIn, strOut, opts);
+            strIn.push(data);
+
+            assert.equal(count, 0);
+            assert.equal(piped, '');
+        });
+
+        test('`urine(strIn, strOut, {split:","})` pipes data to `strOut`', function () {
+            var data = "foo,";
+            var opts = {split: ","};
+
+            urine(strIn, strOut, opts);
+            strIn.push(data);
+
+            assert.equal(count, 1);
+            assert.equal(piped, "foo\n");
+        });
+
+        test('`urine(strIn, strOut, {split:","})` doesn\'t pipe data to `strOut`', function () {
+            var data = "foo";
+            var opts = {split: ","};
+
+            urine(strIn, strOut, opts);
+            strIn.push(data);
+
+            assert.equal(count, 0);
+            assert.equal(piped, '');
+        });
+
+        test('`urine(strIn, strOut, {split:" "})` pipes data to `strOut`', function () {
+            var data = "foo ";
+            var opts = {split: " "};
+
+            urine(strIn, strOut, opts);
+            strIn.push(data);
+
+            assert.equal(count, 1);
+            assert.equal(piped, "foo\n");
+        });
+
+        test('`urine(strIn, strOut, {split:" "})` doesn\'t pipe data to `strOut`', function () {
+            var data = "foo";
+            var opts = {split: " "};
+
+            urine(strIn, strOut, opts);
+            strIn.push(data);
+
+            assert.equal(count, 0);
+            assert.equal(piped, '');
+        });
     });
 
     suite('probability `1`:', function () {

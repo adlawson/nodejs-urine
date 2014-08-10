@@ -10,8 +10,8 @@ function main() {
     var stream;
     var program = initProgram();
     var opts = {
-        pattern: program.split,
-        probability: program.probability
+        probability: program.probability,
+        split: program.split
     };
 
     if (process.stdin.isTTY && 0 < program.args.length) {

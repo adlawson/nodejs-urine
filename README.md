@@ -50,7 +50,8 @@ var stdout = process.stdout;
 var stream = fs.createReadStream('input.txt');
 
 urine(stream, stdout, {
-    probability: 0.1
+    probability: 0.1,
+    split: /\r\n/
 });
 ```
 
