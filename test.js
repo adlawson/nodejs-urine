@@ -7,7 +7,7 @@ var stream = require('stream');
 var through = require('through');
 
 suite('urine:', function () {
-    var nativeRand, opts, strIn, strOut, strOutSpy;
+    var nativeRand, strIn, strOut;
 
     // monkeyPatchMathRand :: Function -> Undefined
     function monkeyPatchMathRand(fn) {
@@ -90,14 +90,14 @@ suite('urine:', function () {
     });
 
     suite('split:', function () {
-        var count, piped;
+        var count, opts, piped;
 
         setup(function () {
-            strIn.resume();
-            strOut.resume();
-
             count = 0;
             piped = '';
+
+            strIn.resume();
+            strOut.resume();
 
             strOut.pipe(through(function (chunk) {
                 count += 1;
@@ -172,233 +172,141 @@ suite('urine:', function () {
         });
     });
 
-    suite('probability `1`:', function () {
+    suite('probability:', function () {
+        var count, data, opts, piped;
+
         setup(function () {
+            count = 0;
+            piped = '';
+            data = "foo\n";
+
             strIn.resume();
             strOut.resume();
-            opts = {
-                probability: 1
-            };
-        });
-
-        test('`urine(strIn, strOut, opts)` pipes to `strOut`', function () {
-            var data = "foo\n";
-            var count = 0;
-            var piped = '';
 
             strOut.pipe(through(function (chunk) {
                 count += 1;
                 piped += chunk;
             }));
-
-            mathRand1234();
-            urine(strIn, strOut, opts);
-            strIn.push(data);
-
-            assert.equal(count, 1);
-            assert.equal(piped, data);
         });
 
-        test('`urine(strIn, strOut, opts)` pipes to `strOut`', function () {
-            var data = "foo\n";
-            var count = 0;
-            var piped = '';
+        suite('`1`:', function () {
+            setup(function () {
+                opts = {probability: 1};
+            });
 
-            strOut.pipe(through(function (chunk) {
-                count += 1;
-                piped += chunk;
-            }));
+            test('`urine(strIn, strOut, opts)` pipes to `strOut`', function () {
+                mathRand1234();
+                urine(strIn, strOut, opts);
+                strIn.push(data);
 
-            mathRand6789();
-            urine(strIn, strOut, opts);
-            strIn.push(data);
+                assert.equal(count, 1);
+                assert.equal(piped, data);
+            });
 
-            assert.equal(count, 1);
-            assert.equal(piped, data);
-        });
-    });
+            test('`urine(strIn, strOut, opts)` pipes to `strOut`', function () {
+                mathRand6789();
+                urine(strIn, strOut, opts);
+                strIn.push(data);
 
-    suite('probability `0.75`:', function () {
-        setup(function () {
-            strIn.resume();
-            strOut.resume();
-            opts = {
-                probability: .75
-            };
+                assert.equal(count, 1);
+                assert.equal(piped, data);
+            });
         });
 
-        test('`urine(strIn, strOut, opts)` pipes to `strOut`', function () {
-            var data = "foo\n";
-            var count = 0;
-            var piped = '';
+        suite('`0.75`:', function () {
+            setup(function () {
+                opts = {probability: .75};
+            });
 
-            strOut.pipe(through(function (chunk) {
-                count += 1;
-                piped += chunk;
-            }));
+            test('`urine(strIn, strOut, opts)` pipes to `strOut`', function () {
+                mathRand1234();
+                urine(strIn, strOut, opts);
+                strIn.push(data);
 
-            mathRand1234();
-            urine(strIn, strOut, opts);
-            strIn.push(data);
+                assert.equal(count, 1);
+                assert.equal(piped, data);
+            });
 
-            assert.equal(count, 1);
-            assert.equal(piped, data);
+            test('`urine(strIn, strOut, opts)` pipes to `strOut`', function () {
+                mathRand6789();
+                urine(strIn, strOut, opts);
+                strIn.push(data);
+
+                assert.equal(count, 1);
+                assert.equal(piped, data);
+            });
         });
 
-        test('`urine(strIn, strOut, opts)` pipes to `strOut`', function () {
-            var data = "foo\n";
-            var count = 0;
-            var piped = '';
+        suite('`0.5`:', function () {
+            setup(function () {
+                opts = {probability: .5};
+            });
 
-            strOut.pipe(through(function (chunk) {
-                count += 1;
-                piped += chunk;
-            }));
+            test('`urine(strIn, strOut, opts)` pipes to `strOut`', function () {
+                mathRand1234();
+                urine(strIn, strOut, opts);
+                strIn.push(data);
 
-            mathRand6789();
-            urine(strIn, strOut, opts);
-            strIn.push(data);
+                assert.equal(count, 1);
+                assert.equal(piped, data);
+            });
 
-            assert.equal(count, 1);
-            assert.equal(piped, data);
-        });
-    });
+            test('`urine(strIn, strOut, opts)` doesn\'t pipe to `strOut`', function () {
+                mathRand6789();
+                urine(strIn, strOut, opts);
+                strIn.push(data);
 
-    suite('probability `0.5`:', function () {
-        setup(function () {
-            strIn.resume();
-            strOut.resume();
-            opts = {
-                probability: .5
-            };
+                assert.equal(count, 0);
+                assert.equal(piped, '');
+            });
         });
 
-        test('`urine(strIn, strOut, opts)` pipes to `strOut`', function () {
-            var data = "foo\n";
-            var count = 0;
-            var piped = '';
+        suite('`0.25`:', function () {
+            setup(function () {
+                opts = {probability: .25};
+            });
 
-            strOut.pipe(through(function (chunk) {
-                count += 1;
-                piped += chunk;
-            }));
+            test('`urine(strIn, strOut, opts)` pipes to `strOut`', function () {
+                mathRand1234();
+                urine(strIn, strOut, opts);
+                strIn.push(data);
 
-            mathRand1234();
-            urine(strIn, strOut, opts);
-            strIn.push(data);
+                assert.equal(count, 1);
+                assert.equal(piped, data);
+            });
 
-            assert.equal(count, 1);
-            assert.equal(piped, data);
+            test('`urine(strIn, strOut, opts)` doesn\'t pipe to `strOut`', function () {
+                mathRand6789();
+                urine(strIn, strOut, opts);
+                strIn.push(data);
+
+                assert.equal(count, 0);
+                assert.equal(piped, '');
+            });
         });
 
-        test('`urine(strIn, strOut, opts)` doesn\'t pipe to `strOut`', function () {
-            var data = "foo\n";
-            var count = 0;
-            var piped = '';
+        suite('`0`:', function () {
+            setup(function () {
+                opts = {probability: 0};
+            });
 
-            strOut.pipe(through(function (chunk) {
-                count += 1;
-                piped += chunk;
-            }));
+            test('`urine(strIn, strOut, opts)` doesn\'t pipe to `strOut`', function () {
+                mathRand1234();
+                urine(strIn, strOut, opts);
+                strIn.push(data);
 
-            mathRand6789();
-            urine(strIn, strOut, opts);
-            strIn.push(data);
+                assert.equal(count, 0);
+                assert.equal(piped, '');
+            });
 
-            assert.equal(count, 0);
-            assert.equal(piped, '');
-        });
-    });
+            test('`urine(strIn, strOut, opts)` doesn\'t pipe to `strOut`', function () {
+                mathRand6789();
+                urine(strIn, strOut, opts);
+                strIn.push(data);
 
-    suite('probability `0.25`:', function () {
-        setup(function () {
-            strIn.resume();
-            strOut.resume();
-            opts = {
-                probability: .25
-            };
-        });
-
-        test('`urine(strIn, strOut, opts)` pipes to `strOut`', function () {
-            var data = "foo\n";
-            var count = 0;
-            var piped = '';
-
-            strOut.pipe(through(function (chunk) {
-                count += 1;
-                piped += chunk;
-            }));
-
-            mathRand1234();
-            urine(strIn, strOut, opts);
-            strIn.push(data);
-
-            assert.equal(count, 1);
-            assert.equal(piped, data);
-        });
-
-        test('`urine(strIn, strOut, opts)` doesn\'t pipe to `strOut`', function () {
-            var data = "foo\n";
-            var count = 0;
-            var piped = '';
-
-            strOut.pipe(through(function (chunk) {
-                count += 1;
-                piped += chunk;
-            }));
-
-            mathRand6789();
-            urine(strIn, strOut, opts);
-            strIn.push(data);
-
-            assert.equal(count, 0);
-            assert.equal(piped, '');
-        });
-    });
-
-    suite('probability `0`:', function () {
-        setup(function () {
-            strIn.resume();
-            strOut.resume();
-            opts = {
-                probability: 0
-            };
-        });
-
-        test('`urine(strIn, strOut, opts)` doesn\'t pipe to `strOut`', function () {
-            var data = "foo\n";
-            var count = 0;
-            var piped = '';
-
-            strOut.pipe(through(function (chunk) {
-                count += 1;
-                piped += chunk;
-            }));
-
-            mathRand1234();
-            urine(strIn, strOut, opts);
-            strIn.push(data);
-
-            assert.equal(count, 0);
-            assert.equal(piped, '');
-        });
-
-        test('`urine(strIn, strOut, opts)` doesn\'t pipe to `strOut`', function () {
-            var data = "foo\n";
-            var count = 0;
-            var piped = '';
-
-            strOut.pipe(through(function (chunk) {
-                count += 1;
-                piped += chunk;
-            }));
-
-            mathRand6789();
-            urine(strIn, strOut, opts);
-            strIn.push(data);
-
-            assert.equal(count, 0);
-            assert.equal(piped, '');
+                assert.equal(count, 0);
+                assert.equal(piped, '');
+            });
         });
     });
 });
