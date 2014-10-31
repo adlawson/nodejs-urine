@@ -74,8 +74,8 @@ The content of this library is released under the **MIT License** by
 
 <!-- Links -->
 [npm]: https://npmjs.org/package/urine
-[travis]: https://travis-ci.org/adlawson/urine.js
+[travis]: https://travis-ci.org/adlawson/nodejs-urine
 [ico-license]: http://img.shields.io/npm/l/urine.svg?style=flat
 [ico-package]: http://img.shields.io/npm/v/urine.svg?style=flat
-[ico-build]: http://img.shields.io/travis/adlawson/urine.js/master.svg?style=flat
+[ico-build]: http://img.shields.io/travis/adlawson/nodejs-urine/master.svg?style=flat
 [license]: /LICENSE
